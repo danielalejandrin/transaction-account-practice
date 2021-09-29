@@ -1,16 +1,21 @@
 package com.pichincha.backend.test.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
+@Table(name="account")
 public class Account {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String number;
@@ -20,32 +25,22 @@ public class Account {
 
 	private LocalDateTime creationDate;
 
-	public String getNumber() {
-		return number;
+
+
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Transaction> transactions;
+/*
+	public void addTransaction(Transaction transaction) {
+		if(transactions.contains(transaction)) return;
+		transactions.add(transaction);
+		transaction.setAccount(this);
 	}
 
-	public void setNumber(String title) {
-		this.number = title;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String content) {
-		this.type = content;
-	}
-
-	public LocalDateTime getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(LocalDateTime creationDate) {
-		this.creationDate = creationDate;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
+	public void removeTransaction(Transaction transaction){
+		if(!transactions.contains(transaction)){
+			return;
+		}
+		transactions.remove(transaction);
+		transaction.setAccount(null);
+	}*/
 }

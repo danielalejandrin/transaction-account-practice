@@ -1,12 +1,13 @@
 package com.pichincha.backend.test.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 @Getter
+@Builder
 public class AccountDto {
 
 	private final String number;

@@ -3,7 +3,6 @@ package com.pichincha.backend.test.rest;
 import com.pichincha.backend.test.dto.NewTransactionDto;
 import com.pichincha.backend.test.dto.TransactionDto;
 import org.junit.Test;
-import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,14 +11,13 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class TransactionControllerTest extends AbstractControllerTest {
-
 
 	@Test
 	public void shouldReturnFoundTransactions() throws Exception {
@@ -33,7 +31,7 @@ public class TransactionControllerTest extends AbstractControllerTest {
 		when(accountService.getTransactionsForAccount(1L)).thenReturn(transactions);
 
 		// then
-		mockMvc.perform(get("/accounts/1/transactions").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/accounts/1/transactions").accept(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0].id", is(2)))
@@ -56,8 +54,8 @@ public class TransactionControllerTest extends AbstractControllerTest {
 		// then
 		mockMvc.perform(post("/accounts/1/transactions")
 			.content(transactionBody)
-			.contentType(APPLICATION_JSON_UTF8)
-			.accept(MediaType.APPLICATION_JSON))
+			.contentType(APPLICATION_JSON)
+			.accept(APPLICATION_JSON))
 			.andExpect(status().isCreated());
 	}
 

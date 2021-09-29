@@ -4,18 +4,26 @@ package com.pichincha.backend.test.service;
 import com.pichincha.backend.test.dto.AccountDto;
 import com.pichincha.backend.test.dto.NewTransactionDto;
 import com.pichincha.backend.test.dto.TransactionDto;
+import com.pichincha.backend.test.model.Account;
+import com.pichincha.backend.test.model.Transaction;
 import com.pichincha.backend.test.repository.AccountRepository;
-import org.springframework.stereotype.Repository;
+import com.pichincha.backend.test.repository.TransactionRepository;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Repository
+@Service
 public class AccountService {
 
-	private final AccountRepository accountRepository;
 
-	public AccountService(AccountRepository accountRepository) {
+	private final AccountRepository accountRepository;
+	private final TransactionRepository transactionRepository;
+
+	public AccountService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
 		this.accountRepository = accountRepository;
+		this.transactionRepository = transactionRepository;
 	}
 
 	public AccountDto getAccount(Long id) {
@@ -31,7 +39,16 @@ public class AccountService {
 	 * @return list of transactions sorted by creation date descending - most recent first
 	 */
 	public List<TransactionDto> getTransactionsForAccount(Long accountId) {
-		throw new UnsupportedOperationException();
+
+			List<Transaction> transactions = transactionRepository.findByAccount_Id(accountId);
+
+			return transactions.stream()
+					.map(transaction -> new TransactionDto(transaction.getId(),
+														transaction.getComment(),
+														transaction.getType(),
+							transaction.getCreationDate()))
+					.collect(Collectors.toList());
+
 	}
 
 	/**
@@ -42,7 +59,15 @@ public class AccountService {
 	 * @throws IllegalArgumentException if there is no account for passed newTransactionDto.accountId
 	 */
 	public Long addTransaction(NewTransactionDto newTransactionDto) {
-		throw new UnsupportedOperationException();
+
+		if(newTransactionDto.getAccountId() == null ){
+			throw  new IllegalArgumentException("Account Id it's required");
+		}
+		Account referencedAccount = accountRepository.findById(newTransactionDto.getAccountId()).orElse(null);
+		Transaction createTransaction = new Transaction(null, newTransactionDto.getComment(), newTransactionDto.getType(), LocalDateTime.now(), null);
+		createTransaction.setAccount(referencedAccount);
+		transactionRepository.save(createTransaction);
+		return createTransaction.getId();
 	}
 
 }

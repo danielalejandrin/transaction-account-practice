@@ -6,6 +6,8 @@ import com.pichincha.backend.test.dto.TransactionDto;
 import com.pichincha.backend.test.model.Account;
 import com.pichincha.backend.test.repository.AccountRepository;
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,16 @@ public class AccountServiceTest {
 
 	@Autowired
 	AccountService accountService;
+
+	@Before
+	public void setup(){
+		accountRepository.deleteAll();
+	}
+
+	@After
+	public void clean(){
+		accountRepository.deleteAll();
+	}
 
 	@Test
 	public void shouldReturnCreatedAccount() {
